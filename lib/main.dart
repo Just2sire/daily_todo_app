@@ -10,22 +10,24 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      // theme: ThemeData(
-      //   useMaterial3: true,
-      //   primaryColor: const Color(0xFF9581FF),
-      //   scaffoldBackgroundColor: const Color(0xFFF6F6F6),
-      //   colorScheme: ColorScheme.fromSeed(
-      //     primary: const Color(0xFF9581FF),
-      //     secondary: const Color(0xFF0F071A),
-      //     background: const Color(0xFF9581FF),
-      //     surface: Colors.white,
-      //     tertiary: const Color(0xFFFFC804),
-      //     seedColor: const Color(0xFFF6F6F6),
-      //     // primary: const Color.from
-      //   ),
-      // ),
+      theme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Poppins'
+        // primaryColor: const Color(0xFF9581FF),
+        // scaffoldBackgroundColor: const Color(0xFFF6F6F6),
+        // colorScheme: ColorScheme.fromSeed(
+        //   primary: const Color(0xFF9581FF),
+        //   secondary: const Color(0xFF0F071A),
+        //   background: const Color(0xFF9581FF),
+        //   surface: Colors.white,
+        //   tertiary: const Color(0xFFFFC804),
+        //   seedColor: const Color(0xFFF6F6F6),
+        //   // primary: const Color.from
+        // ),
+      ),
+      // ignore: prefer_const_constructors
       home: SplashScreen(),
     );
   }

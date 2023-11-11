@@ -9,6 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  gap: ^3.0.1  
+  percent_indicator: ^4.2.3
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -20,3 +23,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: fonts/Poppins-Regular.ttf

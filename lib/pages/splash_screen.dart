@@ -1,4 +1,4 @@
-import 'package:daily_todo/pages/auth_pages/register_screen.dart';
+import 'package:daily_todo/pages/auth_pages/login_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     Future.delayed(const Duration(seconds: 3), () {
-      context.navToview(const RegisterScreen());
+      context.navToview(const LoginScreen());
     });
   }
 
@@ -57,12 +57,13 @@ class _SplashScreenState extends State<SplashScreen>
         child: Center(
           child: DecoratedBox(
             decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  color: const Color(0xFF9581FF),
-                  width: 3,
-                ),
-                borderRadius: BorderRadius.circular(100)),
+              color: Colors.white,
+              border: Border.all(
+                color: const Color(0xFF9581FF),
+                width: 3,
+              ),
+              borderRadius: BorderRadius.circular(100),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Icon(

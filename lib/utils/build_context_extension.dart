@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 extension BuildContextEntension<T> on BuildContext {
 
@@ -107,6 +108,16 @@ extension BuildContextEntension<T> on BuildContext {
 
   navToview (Widget widget) {
     Navigator.of(this).push(MaterialPageRoute(builder: (context) => widget));
+  }
+
+  String formatDate(DateTime date) {
+    final formatter = DateFormat('dd/MM/yyyy');
+    return formatter.format(date);
+  }
+
+  String formatTime(DateTime date) {
+    final formatter = DateFormat('HH:mm');
+    return formatter.format(date);
   }
 
   // Future<bool?> showToast(String message) {

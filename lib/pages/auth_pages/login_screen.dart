@@ -1,16 +1,16 @@
-import 'package:daily_todo/pages/auth_pages/login_screen.dart';
+import 'package:daily_todo/pages/auth_pages/register_screen.dart';
 import 'package:daily_todo/pages/home_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
 import 'package:flutter/material.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -27,7 +27,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               SizedBox(
                 height: context.height * 0.5,
                 child: const Image(
-                  image: AssetImage("assets/images/register.png"),
+                  image: AssetImage("assets/images/login.png"),
                 ),
               ),
               Expanded(
@@ -36,7 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     SizedBox(
-                      height: context.height * 0.27,
+                      height: context.height * 0.18,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -82,27 +82,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               prefixIconColor: Color(0xffDDDADA),
                             ),
                           ),
-                          TextField(
-                            controller: passwordController,
-                            decoration: const InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: EdgeInsets.all(15),
-                              hintText: "Confirm Password",
-                              hintStyle: TextStyle(
-                                height: 2,
-                                color: Color(0xffDDDADA),
-                                fontSize: 15,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                                borderSide: BorderSide.none,
-                              ),
-                              prefixIcon: Icon(Icons.lock_outlined),
-                              prefixIconColor: Color(0xffDDDADA),
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -121,7 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       child: const Text(
-                        "Sign Up",
+                        "Login",
                         style: TextStyle(
                           fontSize: 17,
                           color: Color(0xFFF6F6F6),
@@ -132,7 +111,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Already have an account?",
+                          "Don't have account?",
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
@@ -140,15 +119,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            context.navToview(const LoginScreen());
+                            context.navToview(const RegisterScreen());
                           },
                           child: const Text(
-                            " Login",
+                            " Sign up",
                             style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF9581FF),
-                            ),
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF9581FF)),
                           ),
                         )
                       ],
