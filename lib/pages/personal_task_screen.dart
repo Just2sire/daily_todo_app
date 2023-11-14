@@ -1,5 +1,8 @@
+import 'package:daily_todo/pages/details_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
+import 'package:daily_todo/utils/tasks.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gap/gap.dart';
 
 class PersonalTaskscreen extends StatefulWidget {
@@ -17,7 +20,23 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
       'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'isCompleted': true,
+    },
+    {
+      'title': "UX/UI Design",
+      'description':
+          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
+      'author': "John Doe",
+      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': false,
+    },
+    {
+      'title': "UX/UI Design",
+      'description':
+          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
+      'author': "John Doe",
+      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'isCompleted': true,
     },
     {
       'title': "UX/UI Design",
@@ -41,6 +60,14 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
       'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'isCompleted': true,
+    },
+    {
+      'title': "UX/UI Design",
+      'description':
+          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
+      'author': "John Doe",
+      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': false,
     },
     {
@@ -50,8 +77,39 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
       'author': "John Doe",
       'created_at': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': false,
+    },
+    {
+      'title': "UX/UI Design",
+      'description':
+          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
+      'author': "John Doe",
+      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'isCompleted': true,
+    },
+    {
+      'title': "UX/UI Design",
+      'description':
+          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
+      'author': "John Doe",
+      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'isCompleted': true,
+    },
+    {
+      'title': "UX/UI Design",
+      'description':
+          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
+      'author': "John Doe",
+      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'isCompleted': true,
     },
   ];
+
+  List<Map> taskDone = allPersonalTasks
+      .where((element) => element["isCompleted"] == true)
+      .toList();
+  List<Map> taskInProgress = allPersonalTasks
+      .where((element) => element["isCompleted"] == false)
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -67,10 +125,13 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                 color: Colors.white,
               ),
             ),
-            leading: const Icon(
-              Icons.arrow_back_rounded,
-              size: 30,
-              color: Colors.white,
+            leading: IconButton(
+              onPressed: () => context.navBack(),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                size: 30,
+                color: Colors.white,
+              ),
             ),
             backgroundColor: const Color(0xFF9581FF),
             bottom: const TabBar(
@@ -100,123 +161,183 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
           ),
           body: TabBarView(
             children: [
-              Container(
-                color: const Color(0xFFF6F6F6),
-                padding: EdgeInsets.only(
-                  left: context.width * 0.05,
-                  right: context.width * 0.05,
-                  top: context.width * 0.03,
-                ),
-                height: context.height * 0.95,
-                width: context.width * 0.95,
-                child: Column(
-                  children: [
-                    ListView.builder(
-                      // scrollDirection: Axis.vertical,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: context.width * 0.84,
-                          height: context.height * 0.18,
-                          decoration: const BoxDecoration(
-                            // color: Colors.amber,
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: context.width * 0.022,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF9581FF),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    bottomLeft: Radius.circular(10),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: context.height * 0.03),
+                child: ListView.builder(
+                  itemCount: personalTasks.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => context.navToview(const DetailsScreen()),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: context.width * 0.04,
+                          right: context.width * 0.04,
+                          top: index == 0 ? 0 : context.height * 0.03,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Slidable(
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      setState(() {
+                                        personalTasks[index]['isCompleted'] ==
+                                            false;
+                                      });
+                                      print(
+                                          personalTasks[index]['isCompleted']);
+                                    },
+                                    label: "Progress",
+                                    foregroundColor: const Color(0xFF0F071A)
+                                        .withOpacity(0.4),
+                                    backgroundColor: const Color(0xFF9581FF)
+                                        .withOpacity(0.3),
+                                    borderRadius: const BorderRadius.horizontal(
+                                      right: Radius.circular(3),
+                                    ),
                                   ),
-                                ),
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      setState(() {
+                                        personalTasks[index]['isCompleted'] ==
+                                            true;
+                                      });
+                                      print(
+                                          personalTasks[index]['isCompleted']);
+                                    },
+                                    label: "Done",
+                                    foregroundColor: const Color(0xFF0F071A)
+                                        .withOpacity(0.4),
+                                    borderRadius: const BorderRadius.horizontal(
+                                      right: Radius.circular(3),
+                                    ),
+                                    backgroundColor: const Color(0xFF0F071A)
+                                        .withOpacity(0.1),
+                                  ),
+                                ],
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(context.width * 0.03),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Container(
+                                width: context.width * 0.97,
+                                height: context.height * 0.18,
+                                decoration: const BoxDecoration(
+                                  // color: Colors.amber,
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      personalTasks[index]['title'],
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                                    Container(
+                                      width: context.width * 0.022,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF9581FF),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10),
+                                        ),
                                       ),
                                     ),
-                                    Text(
-                                      "${personalTasks[index]['description'].substring(0, 40)} ...",
-                                      maxLines: 2,
-                                      overflow: TextOverflow
-                                          .fade, // Ajoutez ceci pour montrer "..." en cas de coupure
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: const Color(0xFF0F071A)
-                                            .withOpacity(0.3),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: context.width * 0.75,
-                                      child: Row(
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.all(context.width * 0.03),
+                                      child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            personalTasks[index]['author'],
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              color: const Color(0xFF0F071A)
-                                                  .withOpacity(0.2),
+                                            personalTasks[index]['title'],
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Icon(
-                                                Icons.access_time,
-                                                size: 22,
-                                                color: const Color(0xFF0F071A)
-                                                    .withOpacity(0.2),
-                                              ),
-                                              Gap(context.width * 0.011),
-                                              Text(
-                                                context
-                                                    .formatTime(
-                                                        personalTasks[index]
-                                                            ['created_at'])
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: const Color(0xFF0F071A)
-                                                      .withOpacity(0.2),
+                                          Text(
+                                            "${personalTasks[index]['description'].substring(0, 40)} ...",
+                                            maxLines: 2,
+                                            overflow: TextOverflow
+                                                .fade, // Ajoutez ceci pour montrer "..." en cas de coupure
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: const Color(0xFF0F071A)
+                                                  .withOpacity(0.3),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: context.width * 0.75,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  personalTasks[index]
+                                                      ['author'],
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    color:
+                                                        const Color(0xFF0F071A)
+                                                            .withOpacity(0.2),
+                                                  ),
                                                 ),
-                                              ),
-                                              Gap(context.width * 0.035),
-                                              Icon(
-                                                Icons.calendar_month,
-                                                size: 22,
-                                                color: const Color(0xFF0F071A)
-                                                    .withOpacity(0.2),
-                                              ),
-                                              Gap(context.width * 0.011),
-                                              Text(
-                                                context
-                                                    .formatDate(
-                                                        personalTasks[index]
-                                                            ['created_at'])
-                                                    .toString(),
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  color: const Color(0xFF0F071A)
-                                                      .withOpacity(0.2),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.access_time,
+                                                      size: 22,
+                                                      color: const Color(
+                                                              0xFF0F071A)
+                                                          .withOpacity(0.2),
+                                                    ),
+                                                    Gap(context.width * 0.011),
+                                                    Text(
+                                                      context
+                                                          .formatTime(
+                                                              personalTasks[
+                                                                      index][
+                                                                  'created_at'])
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: const Color(
+                                                                0xFF0F071A)
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                    ),
+                                                    Gap(context.width * 0.035),
+                                                    Icon(
+                                                      Icons.calendar_month,
+                                                      size: 22,
+                                                      color: const Color(
+                                                              0xFF0F071A)
+                                                          .withOpacity(0.2),
+                                                    ),
+                                                    Gap(context.width * 0.011),
+                                                    Text(
+                                                      context
+                                                          .formatDate(
+                                                              personalTasks[
+                                                                      index][
+                                                                  'created_at'])
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: const Color(
+                                                                0xFF0F071A)
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -224,19 +345,391 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
-                        );
-                      },
-                      // separatorBuilder: (context, index) =>
-                      //     Gap(context.width * 0.02),
-                      itemCount: personalTasks.length,
-                    ),
-                  ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
-              Container(),
-              Container(),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: context.height * 0.03),
+                child: ListView.builder(
+                  itemCount: taskInProgress.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => context.navToview(const DetailsScreen()),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: context.width * 0.04,
+                          right: context.width * 0.04,
+                          top: index == 0 ? 0 : context.height * 0.03,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Slidable(
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
+                                children: [
+                                  // SlidableAction(
+                                  //   onPressed: (context) {
+                                  //     setState(() {
+                                  //       taskInProgress[index]['isCompleted'] ==
+                                  //           false;
+                                  //     });
+                                  //     print(taskInProgress[index]['isCompleted']);
+                                  //   },
+                                  //   label: "Progress",
+                                  //   foregroundColor:
+                                  //       const Color(0xFF0F071A).withOpacity(0.4),
+                                  //   backgroundColor:
+                                  //       const Color(0xFF9581FF).withOpacity(0.3),
+                                  //   borderRadius: const BorderRadius.horizontal(
+                                  //     right: Radius.circular(3),
+                                  //   ),
+                                  // ),
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      setState(() {
+                                        taskInProgress[index]['isCompleted'] ==
+                                            true;
+                                      });
+                                      print(
+                                          taskInProgress[index]['isCompleted']);
+                                    },
+                                    label: "Done",
+                                    foregroundColor: const Color(0xFF0F071A)
+                                        .withOpacity(0.4),
+                                    borderRadius: const BorderRadius.horizontal(
+                                      right: Radius.circular(3),
+                                    ),
+                                    backgroundColor: const Color(0xFF0F071A)
+                                        .withOpacity(0.1),
+                                  ),
+                                ],
+                              ),
+                              child: Container(
+                                width: context.width * 0.97,
+                                height: context.height * 0.18,
+                                decoration: const BoxDecoration(
+                                  // color: Colors.amber,
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: context.width * 0.022,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF9581FF),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.all(context.width * 0.03),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            taskInProgress[index]['title'],
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${taskInProgress[index]['description'].substring(0, 40)} ...",
+                                            maxLines: 2,
+                                            overflow: TextOverflow
+                                                .fade, // Ajoutez ceci pour montrer "..." en cas de coupure
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: const Color(0xFF0F071A)
+                                                  .withOpacity(0.3),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: context.width * 0.75,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  taskInProgress[index]
+                                                      ['author'],
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    color:
+                                                        const Color(0xFF0F071A)
+                                                            .withOpacity(0.2),
+                                                  ),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.access_time,
+                                                      size: 22,
+                                                      color: const Color(
+                                                              0xFF0F071A)
+                                                          .withOpacity(0.2),
+                                                    ),
+                                                    Gap(context.width * 0.011),
+                                                    Text(
+                                                      context
+                                                          .formatTime(
+                                                              taskInProgress[
+                                                                      index][
+                                                                  'created_at'])
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: const Color(
+                                                                0xFF0F071A)
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                    ),
+                                                    Gap(context.width * 0.035),
+                                                    Icon(
+                                                      Icons.calendar_month,
+                                                      size: 22,
+                                                      color: const Color(
+                                                              0xFF0F071A)
+                                                          .withOpacity(0.2),
+                                                    ),
+                                                    Gap(context.width * 0.011),
+                                                    Text(
+                                                      context
+                                                          .formatDate(
+                                                              taskInProgress[
+                                                                      index][
+                                                                  'created_at'])
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: const Color(
+                                                                0xFF0F071A)
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: context.height * 0.03),
+                child: ListView.builder(
+                  itemCount: taskDone.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () => context.navToview(const DetailsScreen()),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: context.width * 0.04,
+                          right: context.width * 0.04,
+                          top: index == 0 ? 0 : context.height * 0.03,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Slidable(
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      setState(() {
+                                        taskDone[index]['isCompleted'] == false;
+                                      });
+                                      print(taskDone[index]['isCompleted']);
+                                    },
+                                    label: "Progress",
+                                    foregroundColor: const Color(0xFF0F071A)
+                                        .withOpacity(0.4),
+                                    backgroundColor: const Color(0xFF9581FF)
+                                        .withOpacity(0.3),
+                                    borderRadius: const BorderRadius.horizontal(
+                                      right: Radius.circular(3),
+                                    ),
+                                  ),
+                                  // SlidableAction(
+                                  //   onPressed: (context) {
+                                  //     setState(() {
+                                  //       taskDone[index]['isCompleted'] ==
+                                  //           true;
+                                  //     });
+                                  //     print(taskDone[index]['isCompleted']);
+                                  //   },
+                                  //   label: "Done",
+                                  //   foregroundColor:
+                                  //       const Color(0xFF0F071A).withOpacity(0.4),
+                                  //   borderRadius: const BorderRadius.horizontal(
+                                  //     right: Radius.circular(3),
+                                  //   ),
+                                  //   backgroundColor:
+                                  //       const Color(0xFF0F071A).withOpacity(0.1),
+                                  // ),
+                                ],
+                              ),
+                              child: Container(
+                                width: context.width * 0.97,
+                                height: context.height * 0.18,
+                                decoration: const BoxDecoration(
+                                  // color: Colors.amber,
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: context.width * 0.022,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF9581FF),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.all(context.width * 0.03),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            taskDone[index]['title'],
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            "${taskDone[index]['description'].substring(0, 40)} ...",
+                                            maxLines: 2,
+                                            overflow: TextOverflow
+                                                .fade, // Ajoutez ceci pour montrer "..." en cas de coupure
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: const Color(0xFF0F071A)
+                                                  .withOpacity(0.3),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: context.width * 0.75,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  taskDone[index]['author'],
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    color:
+                                                        const Color(0xFF0F071A)
+                                                            .withOpacity(0.2),
+                                                  ),
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.access_time,
+                                                      size: 22,
+                                                      color: const Color(
+                                                              0xFF0F071A)
+                                                          .withOpacity(0.2),
+                                                    ),
+                                                    Gap(context.width * 0.011),
+                                                    Text(
+                                                      context
+                                                          .formatTime(taskDone[
+                                                                  index]
+                                                              ['created_at'])
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: const Color(
+                                                                0xFF0F071A)
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                    ),
+                                                    Gap(context.width * 0.035),
+                                                    Icon(
+                                                      Icons.calendar_month,
+                                                      size: 22,
+                                                      color: const Color(
+                                                              0xFF0F071A)
+                                                          .withOpacity(0.2),
+                                                    ),
+                                                    Gap(context.width * 0.011),
+                                                    Text(
+                                                      context
+                                                          .formatDate(taskDone[
+                                                                  index]
+                                                              ['created_at'])
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 13,
+                                                        color: const Color(
+                                                                0xFF0F071A)
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:daily_todo/pages/personal_task_screen.dart';
+import 'package:daily_todo/pages/team_task_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -84,8 +85,9 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         appBar: AppBar(
           systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarColor: Color(0xFFF6F6F6),
-              statusBarBrightness: Brightness.dark),
+            statusBarColor: Color(0xFFF6F6F6),
+            statusBarBrightness: Brightness.dark,
+          ),
           elevation: 0.0,
           backgroundColor: const Color(0xFFF6F6F6),
           leading: Container(
@@ -200,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () {
                                   print("Personal Type choose");
                                   setState(() {
-                                  _changeType(typePersonal, typeTeam);
+                                    _changeType(typePersonal, typeTeam);
                                     // typeTeam = false;
                                     // typePersonal = true;
                                   });
@@ -246,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onTap: () {
                                   print("Type team choose");
                                   setState(() {
-                                  _changeType(typeTeam, typePersonal);
+                                    _changeType(typeTeam, typePersonal);
                                     // typePersonal = false;
                                     // typeTeam = true;
                                   });
@@ -368,7 +370,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.only(
           left: context.width * 0.05,
           right: context.width * 0.05,
-          top: context.width * 0.03,
+          top: context.height * 0.007,
         ),
         child: Column(
           children: [
@@ -555,7 +557,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () => context.navToview(const PersonalTaskscreen()),
+                          onTap: () =>
+                              context.navToview(const PersonalTaskscreen()),
                           child: Text(
                             "View all",
                             style: TextStyle(
@@ -720,11 +723,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(
-                          "View all",
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: const Color(0xFF0F071A).withOpacity(0.3),
+                        GestureDetector(
+                          onTap: () =>
+                              context.navToview(const TeamTaskscreen()),
+                          child: Text(
+                            "View all",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: const Color(0xFF0F071A).withOpacity(0.3),
+                            ),
                           ),
                         ),
                       ],

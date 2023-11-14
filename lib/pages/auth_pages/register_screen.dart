@@ -140,7 +140,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            context.navToview(const LoginScreen());
+                            context.navToAndReplace(const LoginScreen());
                           },
                           child: const Text(
                             " Login",

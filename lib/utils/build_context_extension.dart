@@ -110,6 +110,14 @@ extension BuildContextEntension<T> on BuildContext {
     Navigator.of(this).push(MaterialPageRoute(builder: (context) => widget));
   }
 
+  navBack () {
+    Navigator.of(this).pop();
+  }
+
+  navToAndReplace (Widget widget) {
+    Navigator.of(this).pushReplacement(MaterialPageRoute(builder: (context) => widget));
+  }
+
   String formatDate(DateTime date) {
     final formatter = DateFormat('dd/MM/yyyy');
     return formatter.format(date);
