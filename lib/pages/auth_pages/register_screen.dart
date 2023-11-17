@@ -1,7 +1,9 @@
+import 'package:daily_todo/data/auth_data.dart';
 import 'package:daily_todo/pages/auth_pages/login_screen.dart';
 import 'package:daily_todo/pages/home_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -11,8 +13,33 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  Map registerData = {};
+
+  void _setRegisterData(Map data) {
+    setState(() {
+      users.value = data;
+      currentUser.value = data;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    users.addListener(() {});
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,94 +48,149 @@ class _RegisterScreenState extends State<RegisterScreen> {
         body: Container(
           color: const Color(0xFFF6F6F6),
           padding: EdgeInsets.all(context.width * 0.05),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(
-                height: context.height * 0.5,
-                child: const Image(
-                  image: AssetImage("assets/images/register.png"),
+          height: context.height * 1,
+          width: context.width * 1,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  height: context.height * 0.5,
+                  child: const Image(
+                    image: AssetImage("assets/images/register.png"),
+                  ),
                 ),
-              ),
-              Expanded(
-                // height: context.height * 0.18,
-                child: Column(
+                Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     SizedBox(
-                      height: context.height * 0.27,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextField(
-                            controller: usernameController,
-                            decoration: const InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: EdgeInsets.all(15),
-                              hintText: "Username",
-                              hintStyle: TextStyle(
-                                height: 2,
-                                color: Color(0xffDDDADA),
-                                fontSize: 15,
+                      height: context.height * 0.32,
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextFormField(
+                              controller: usernameController,
+                              validator: (value) {
+                                if (value!.length < 3 || value.isEmpty) {
+                                  return "Minimun 3 caractères";
+                                }
+                                return null;
+                              },
+                              decoration: const InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: EdgeInsets.all(15),
+                                hintText: "Username",
+                                hintStyle: TextStyle(
+                                  height: 2,
+                                  color: Color(0xffDDDADA),
+                                  fontSize: 15,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                prefixIcon: Icon(Icons.person_outlined),
+                                prefixIconColor: Color(0xffDDDADA),
                               ),
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                                borderSide: BorderSide.none,
-                              ),
-                              prefixIcon: Icon(Icons.person_outlined),
-                              prefixIconColor: Color(0xffDDDADA),
                             ),
-                          ),
-                          TextField(
-                            controller: passwordController,
-                            decoration: const InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: EdgeInsets.all(15),
-                              hintText: "Password",
-                              hintStyle: TextStyle(
-                                height: 2,
-                                color: Color(0xffDDDADA),
-                                fontSize: 15,
+                            TextFormField(
+                              controller: passwordController,
+                              validator: (value) {
+                                if (value!.length < 8) {
+                                  return "Minimun 8 caractères";
+                                }
+                                return null;
+                              },
+                              decoration: const InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                contentPadding: EdgeInsets.all(15),
+                                hintText: "Password",
+                                hintStyle: TextStyle(
+                                  height: 2,
+                                  color: Color(0xffDDDADA),
+                                  fontSize: 15,
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15)),
+                                  borderSide: BorderSide.none,
+                                ),
+                                prefixIcon: Icon(Icons.lock_outlined),
+                                prefixIconColor: Color(0xffDDDADA),
                               ),
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                                borderSide: BorderSide.none,
-                              ),
-                              prefixIcon: Icon(Icons.lock_outlined),
-                              prefixIconColor: Color(0xffDDDADA),
                             ),
-                          ),
-                          TextField(
-                            controller: passwordController,
-                            decoration: const InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: EdgeInsets.all(15),
-                              hintText: "Confirm Password",
-                              hintStyle: TextStyle(
-                                height: 2,
-                                color: Color(0xffDDDADA),
-                                fontSize: 15,
+                            Padding(
+                              padding: EdgeInsets.only(
+                                bottom: context.height * 0.03,
                               ),
-                              border: OutlineInputBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)),
-                                borderSide: BorderSide.none,
+                              child: TextFormField(
+                                controller: confirmPasswordController,
+                                validator: (value) {
+                                  if (value!.length < 8 ||
+                                      confirmPasswordController.text !=
+                                          passwordController.text) {
+                                    return "Mot de passe incompatible";
+                                  }
+                                  return null;
+                                },
+                                decoration: const InputDecoration(
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: EdgeInsets.all(15),
+                                  hintText: "Confirm Password",
+                                  hintStyle: TextStyle(
+                                    height: 2,
+                                    color: Color(0xffDDDADA),
+                                    fontSize: 15,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  prefixIcon: Icon(Icons.lock_outlined),
+                                  prefixIconColor: Color(0xffDDDADA),
+                                ),
                               ),
-                              prefixIcon: Icon(Icons.lock_outlined),
-                              prefixIconColor: Color(0xffDDDADA),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
+                    Gap(context.width * 0.02),
                     ElevatedButton(
                       onPressed: () {
-                        context.navToview(const HomeScreen());
+                        if (_formKey.currentState!.validate()) {
+                          final username = usernameController.text;
+                          final password = passwordController.text;
+                          final confirmPassword =
+                              confirmPasswordController.text;
+                          registerData = {
+                            'username': username,
+                            'password': password,
+                            'confirmPassword': confirmPassword
+                          };
+                          // debugPrint(registerData as String?);
+                          _setRegisterData(registerData);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              duration: Duration(milliseconds: 100),
+                              content: Text("Envoi en cours"),
+                            ),
+                          );
+                          // FocusScope.of(context)
+                          //     .requestFocus(FocusNode);
+                          Future.delayed(const Duration(milliseconds: 400), () {
+                            context.navToview(const HomeScreen());
+                          });
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF9581FF),
@@ -128,6 +210,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
+                    Gap(context.width * 0.03),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -155,8 +238,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     )
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
