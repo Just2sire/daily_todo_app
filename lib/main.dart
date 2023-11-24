@@ -1,8 +1,27 @@
+import 'package:daily_todo/data/providers/personal_task_provider.dart';
 import 'package:daily_todo/pages/splash_screen.dart';
+import 'package:daily_todo/services/storage.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MainApp());
+// ...
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await Storage.init();
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => PersonalTaskProvider())
+      ],
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -13,8 +32,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Poppins'
+        useMaterial3: true, fontFamily: 'Poppins',
         // primaryColor: const Color(0xFF9581FF),
         // scaffoldBackgroundColor: const Color(0xFFF6F6F6),
         // colorScheme: ColorScheme.fromSeed(

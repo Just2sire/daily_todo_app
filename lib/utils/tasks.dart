@@ -1,3 +1,5 @@
+import 'dart:math';
+
 List<Map> allPersonalTasks = [
     {
       'title': "UX/UI Design",
@@ -180,3 +182,33 @@ List<Map> allTeamTasks = [
       'isCompleted': true,
     },
   ];
+
+const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+///Generate string containing characters and numbers randomly
+String generateRandomString(int length) {
+  final random = Random();
+  return String.fromCharCodes(
+    Iterable.generate(
+      length,
+      (_) => chars.codeUnitAt(
+        random.nextInt(chars.length),
+      ),
+    ),
+  );
+}
+
+/// Generate random number
+String generateRandomNumber(int length) {
+  final random = Random();
+  return String.fromCharCodes(
+    Iterable.generate(
+      length,
+      (_) => random.nextInt(10),
+    ),
+  );
+}
+
+String generateFireStoreID() {
+  return generateRandomString(20);
+}

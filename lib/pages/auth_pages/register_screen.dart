@@ -2,6 +2,7 @@ import 'package:daily_todo/data/auth_data.dart';
 import 'package:daily_todo/pages/auth_pages/login_screen.dart';
 import 'package:daily_todo/pages/home_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -12,11 +13,11 @@ class RegisterScreen extends StatefulWidget {
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends State<RegisterScreen> with StateLoading {
   final _formKey = GlobalKey<FormState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
 
   Map registerData = {};
 
@@ -25,6 +26,69 @@ class _RegisterScreenState extends State<RegisterScreen> {
       users.value = data;
       currentUser.value = data;
     });
+  }
+
+  String? _validateEmail(String? value) {
+    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+        r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+        r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+        r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+        r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+        r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+        r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+    final regex = RegExp(pattern);
+
+    return value!.isNotEmpty && !regex.hasMatch(value)
+        ? 'Enter a valid email address'
+        : null;
+  }
+
+  Future<void> _validateRegisterData() async {
+    if (_formKey.currentState!.validate()) {
+      final username = usernameController.text;
+      final email = emailController.text;
+      final password = passwordController.text;
+      registerData = {
+        'username': username,
+        'password': password,
+        'email': email
+      };
+
+      loading = true;
+
+      _setRegisterData(registerData);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(milliseconds: 100),
+          content: Text("Envoi en cours"),
+        ),
+      );
+      // FocusScope.of(context)
+      //     .requestFocus(FocusNode);
+
+      try {
+        final credential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          print('The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          print('The account already exists for that email.');
+        }
+      } catch (e) {
+        print(e);
+      }
+
+      Future.delayed(const Duration(milliseconds: 400), () {
+        context.navToview(const HomeScreen());
+      });
+
+      loading = true;
+    }
   }
 
   @override
@@ -37,7 +101,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void dispose() {
     usernameController.dispose();
     passwordController.dispose();
-    confirmPasswordController.dispose();
+    emailController.dispose();
     super.dispose();
   }
 
@@ -62,10 +126,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                 ),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     SizedBox(
-                      height: context.height * 0.32,
+                      height: context.height * 0.36,
                       child: Form(
                         key: _formKey,
                         child: Column(
@@ -99,18 +163,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             TextFormField(
-                              controller: passwordController,
-                              validator: (value) {
-                                if (value!.length < 8) {
-                                  return "Minimun 8 caractères";
-                                }
-                                return null;
-                              },
+                              controller: emailController,
+                              validator: _validateEmail,
                               decoration: const InputDecoration(
                                 filled: true,
                                 fillColor: Colors.white,
                                 contentPadding: EdgeInsets.all(15),
-                                hintText: "Password",
+                                hintText: "Email",
                                 hintStyle: TextStyle(
                                   height: 2,
                                   color: Color(0xffDDDADA),
@@ -121,7 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       BorderRadius.all(Radius.circular(15)),
                                   borderSide: BorderSide.none,
                                 ),
-                                prefixIcon: Icon(Icons.lock_outlined),
+                                prefixIcon: Icon(Icons.mail_outlined),
                                 prefixIconColor: Color(0xffDDDADA),
                               ),
                             ),
@@ -130,12 +189,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 bottom: context.height * 0.03,
                               ),
                               child: TextFormField(
-                                controller: confirmPasswordController,
+                                controller: passwordController,
                                 validator: (value) {
-                                  if (value!.length < 8 ||
-                                      confirmPasswordController.text !=
-                                          passwordController.text) {
-                                    return "Mot de passe incompatible";
+                                  if (value!.length < 8) {
+                                    return "Minimum 8 caractères";
                                   }
                                   return null;
                                 },
@@ -143,7 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   filled: true,
                                   fillColor: Colors.white,
                                   contentPadding: EdgeInsets.all(15),
-                                  hintText: "Confirm Password",
+                                  hintText: "Password",
                                   hintStyle: TextStyle(
                                     height: 2,
                                     color: Color(0xffDDDADA),
@@ -166,32 +223,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     Gap(context.width * 0.02),
                     ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          final username = usernameController.text;
-                          final password = passwordController.text;
-                          final confirmPassword =
-                              confirmPasswordController.text;
-                          registerData = {
-                            'username': username,
-                            'password': password,
-                            'confirmPassword': confirmPassword
-                          };
-                          // debugPrint(registerData as String?);
-                          _setRegisterData(registerData);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              duration: Duration(milliseconds: 100),
-                              content: Text("Envoi en cours"),
-                            ),
-                          );
-                          // FocusScope.of(context)
-                          //     .requestFocus(FocusNode);
-                          Future.delayed(const Duration(milliseconds: 400), () {
-                            context.navToview(const HomeScreen());
-                          });
-                        }
-                      },
+                      onPressed: _validateRegisterData,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF9581FF),
                         fixedSize: Size(

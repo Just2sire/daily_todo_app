@@ -1,11 +1,14 @@
-import 'package:daily_todo/data/auth_data.dart';
+import 'package:daily_todo/data/models/task_type.dart';
+import 'package:daily_todo/data/providers/personal_task_provider.dart';
 import 'package:daily_todo/pages/personal_task_screen.dart';
 import 'package:daily_todo/pages/team_task_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,21 +18,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String username = currentUser.value["username"];
+  String username = "User x";
   int personalTaskNumber = 12;
   int teamTaskNumber = 8;
   int taskProgess = 65;
   int completedTask = 12;
-  int pendingTask = 8;
-
-  void _changeType(bool val1, bool val2) {
-    setState(() {
-      buttonType.value = {'team': val1, 'personal': val2};
-    });
-  }
-
-  // bool buttonType.value['personal'] = false;
-  // bool buttonType.value['team'] = true;
+  int get pendingTask => context.watch<PersonalTaskProvider>().personalTasks.where((element) => element.isCompleted == false).length;
 
   List<Map> personalTasks = [
     {
@@ -77,12 +71,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    users.addListener(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    _changeType(true, false);
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+      }
+    });
     return Material(
       child: WillPopScope(
         onWillPop: () async {
@@ -118,239 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context: context,
                 isScrollControlled: true,
                 builder: (context) {
-                  return Container(
-                    padding: EdgeInsets.only(
-                      left: context.width * 0.05,
-                      right: context.width * 0.05,
-                      // top: context.width * 0.03,
-                    ),
-                    height: context.height * 0.63,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(10),
-                      ),
-                      color: Color(0xFFF6F6F6),
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Gap(context.height * 0.030),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: context.width * 0.15,
-                                height: context.height * 0.01,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFF9581FF),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(7),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Gap(context.height * 0.005),
-                          const Divider(
-                            color: Color(0xffDDDADA),
-                          ),
-                          Gap(context.height * 0.015),
-                          const Text(
-                            "Title",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Gap(context.height * 0.007),
-                          const TextField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: EdgeInsets.all(15),
-                              hintText: "Name",
-                              hintStyle: TextStyle(
-                                height: 2,
-                                color: Color(0xffDDDADA),
-                                fontSize: 15,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(15),
-                                ),
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
-                          ),
-                          Gap(context.height * 0.007),
-                          const Text(
-                            "Type",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          DecoratedBox(
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.horizontal(
-                                left: Radius.circular(10),
-                                right: Radius.circular(10),
-                              ),
-                            ),
-                            child: Row(
-                              // mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _changeType(false, true);
-                                    });
-                                  },
-                                  child: Container(
-                                    height: context.height * 0.068,
-                                    width: context.width * 0.45,
-                                    decoration: BoxDecoration(
-                                      color: buttonType.value['personal']
-                                          ? const Color(0xFF9581FF)
-                                          : Colors.white,
-                                      borderRadius: BorderRadius.horizontal(
-                                        left: const Radius.circular(10),
-                                        right: buttonType.value['personal']
-                                            ? const Radius.circular(10)
-                                            : Radius.zero,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.person_outline,
-                                          color: buttonType.value['personal']
-                                              ? Colors.white
-                                              : const Color(0xFF9581FF),
-                                          size: 27,
-                                        ),
-                                        Text(
-                                          "Personnal",
-                                          style: TextStyle(
-                                            color: buttonType.value['personal']
-                                                ? Colors.white
-                                                : const Color(0xFF9581FF),
-                                            fontSize: 17,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _changeType(true, false);
-                                    });
-                                  },
-                                  child: Container(
-                                    height: context.height * 0.068,
-                                    width: context.width * 0.45,
-                                    decoration: BoxDecoration(
-                                      color: buttonType.value['team']
-                                          ? const Color(0xFF9581FF)
-                                          : Colors.white,
-                                      borderRadius: BorderRadius.horizontal(
-                                        right: const Radius.circular(10),
-                                        left: buttonType.value['team']
-                                            ? const Radius.circular(10)
-                                            : Radius.zero,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.people_outline,
-                                          color: buttonType.value['team']
-                                              ? Colors.white
-                                              : const Color(0xFF9581FF),
-                                          size: 27,
-                                        ),
-                                        Text(
-                                          "Team",
-                                          style: TextStyle(
-                                            color: buttonType.value['team']
-                                                ? Colors.white
-                                                : const Color(0xFF9581FF),
-                                            fontSize: 17,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Gap(context.height * 0.012),
-                          const Text(
-                            "Description",
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          Gap(context.height * 0.007),
-                          const TextField(
-                            maxLines: 3,
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.white,
-                              contentPadding: EdgeInsets.all(15),
-                              hintText: "Name",
-                              hintStyle: TextStyle(
-                                height: 2,
-                                color: Color(0xffDDDADA),
-                                fontSize: 15,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(15),
-                                ),
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
-                          ),
-                          Gap(context.height * 0.015),
-                          ElevatedButton(
-                            onPressed: () {
-                              context.navToview(const HomeScreen());
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF9581FF),
-                              fixedSize: Size(
-                                (context.width * 909),
-                                (context.height * 0.07),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(13),
-                              ),
-                            ),
-                            child: const Text(
-                              "Login",
-                              style: TextStyle(
-                                fontSize: 17,
-                                color: Color(0xFFF6F6F6),
-                              ),
-                            ),
-                          ),
-                          Gap(context.height * 0.015),
-                        ],
-                      ),
-                    ),
-                  );
+                  return const BottomModal();
                 },
               );
             },
@@ -821,8 +588,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 Text(
                                                   context
                                                       .formatTime(
-                                                          personalTasks[index]
-                                                              ['created_at'])
+                                                        personalTasks[index]
+                                                            ['created_at'],
+                                                      )
                                                       .toString(),
                                                   style: TextStyle(
                                                     fontSize: 13,
@@ -842,8 +610,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 Text(
                                                   context
                                                       .formatDate(
-                                                          personalTasks[index]
-                                                              ['created_at'])
+                                                        personalTasks[index]
+                                                            ['created_at'],
+                                                      )
                                                       .toString(),
                                                   style: TextStyle(
                                                     fontSize: 13,
@@ -874,6 +643,280 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class BottomModal extends StatefulWidget {
+  const BottomModal({super.key});
+
+  @override
+  State<BottomModal> createState() => _BottomModalState();
+}
+
+class _BottomModalState extends State<BottomModal> {
+  TaskType type = TaskType.personal;
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  void _validateForm() {
+    if (_formKey.currentState!.validate()) {
+      context.read<PersonalTaskProvider>().addPersonalTask(
+            title: titleController.text,
+            description: descriptionController.text,
+          );
+      debugPrint("Done");
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(
+        left: context.width * 0.05,
+        right: context.width * 0.05,
+        // top: context.width * 0.03,
+      ),
+      height: context.height * 0.63,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(10),
+        ),
+        color: Color(0xFFF6F6F6),
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Gap(context.height * 0.030),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: context.width * 0.15,
+                    height: context.height * 0.01,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF9581FF),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(7),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Gap(context.height * 0.005),
+              const Divider(
+                color: Color(0xffDDDADA),
+              ),
+              Gap(context.height * 0.015),
+              const Text(
+                "Title",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Gap(context.height * 0.007),
+              TextFormField(
+                controller: titleController,
+                validator: (value) {
+                  if (value!.length < 3 || value.isEmpty) {
+                    return "Minimun 3 caractères";
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.all(15),
+                  hintText: "Name",
+                  hintStyle: TextStyle(
+                    height: 2,
+                    color: Color(0xffDDDADA),
+                    fontSize: 15,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
+                    ),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              Gap(context.height * 0.007),
+              const Text(
+                "Type",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              DecoratedBox(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.horizontal(
+                    left: Radius.circular(10),
+                    right: Radius.circular(10),
+                  ),
+                ),
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          type = TaskType.personal;
+                        });
+                      },
+                      child: Container(
+                        height: context.height * 0.068,
+                        width: context.width * 0.45,
+                        decoration: BoxDecoration(
+                          color: type == TaskType.personal
+                              ? const Color(0xFF9581FF)
+                              : Colors.white,
+                          borderRadius: BorderRadius.horizontal(
+                            left: const Radius.circular(10),
+                            right: type == TaskType.personal
+                                ? const Radius.circular(10)
+                                : Radius.zero,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.person_outline,
+                              color: type == TaskType.personal
+                                  ? Colors.white
+                                  : const Color(0xFF9581FF),
+                              size: 27,
+                            ),
+                            Text(
+                              "Personnal",
+                              style: TextStyle(
+                                color: type == TaskType.personal
+                                    ? Colors.white
+                                    : const Color(0xFF9581FF),
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          type = TaskType.team;
+                        });
+                      },
+                      child: Container(
+                        height: context.height * 0.068,
+                        width: context.width * 0.45,
+                        decoration: BoxDecoration(
+                          color: type == TaskType.team
+                              ? const Color(0xFF9581FF)
+                              : Colors.white,
+                          borderRadius: BorderRadius.horizontal(
+                            right: const Radius.circular(10),
+                            left: type == TaskType.team
+                                ? const Radius.circular(10)
+                                : Radius.zero,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.people_outline,
+                              color: type == TaskType.team
+                                  ? Colors.white
+                                  : const Color(0xFF9581FF),
+                              size: 27,
+                            ),
+                            Text(
+                              "Team",
+                              style: TextStyle(
+                                color: type == TaskType.team
+                                    ? Colors.white
+                                    : const Color(0xFF9581FF),
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Gap(context.height * 0.012),
+              const Text(
+                "Description",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Gap(context.height * 0.007),
+              TextFormField(
+                controller: descriptionController,
+                validator: (value) {
+                  if (value!.length < 10 || value.isEmpty) {
+                    return "Minimun 10 caractères";
+                  }
+                  return null;
+                },
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.all(15),
+                  hintText: "Name",
+                  hintStyle: TextStyle(
+                    height: 2,
+                    color: Color(0xffDDDADA),
+                    fontSize: 15,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
+                    ),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              Gap(context.height * 0.015),
+              ElevatedButton(
+                onPressed: _validateForm,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF9581FF),
+                  fixedSize: Size(
+                    (context.width * 909),
+                    (context.height * 0.07),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(13),
+                  ),
+                ),
+                child: const Text(
+                  "Add",
+                  style: TextStyle(
+                    fontSize: 17,
+                    color: Color(0xFFF6F6F6),
+                  ),
+                ),
+              ),
+              Gap(context.height * 0.015),
+            ],
+          ),
         ),
       ),
     );

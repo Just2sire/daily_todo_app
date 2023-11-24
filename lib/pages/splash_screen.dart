@@ -1,5 +1,7 @@
 import 'package:daily_todo/pages/auth_pages/login_screen.dart';
+import 'package:daily_todo/pages/home_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -30,7 +32,11 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     Future.delayed(const Duration(seconds: 3), () {
-      context.navToview(const LoginScreen());
+      if (FirebaseAuth.instance.currentUser == null) {
+        context.navToview(const LoginScreen());
+      } else {
+        context.navToview(const HomeScreen());
+      }
     });
   }
 

@@ -1,4 +1,4 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
+// import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -77,7 +77,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         decoration:
                             const BoxDecoration(color: Color(0xFFF6F6F6)),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

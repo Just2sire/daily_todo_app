@@ -2,6 +2,7 @@ import 'package:daily_todo/data/auth_data.dart';
 import 'package:daily_todo/pages/auth_pages/register_screen.dart';
 import 'package:daily_todo/pages/home_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -12,23 +13,115 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController usernameController = TextEditingController();
+mixin StateLoading {
+  bool _loading = false;
+
+  bool get loading => _loading;
+
+  void setState(VoidCallback fn);
+
+  set loading(bool value) {
+    setState(() {
+      _loading = value;
+    });
+  }
+}
+
+class _LoginScreenState extends State<LoginScreen> with StateLoading{
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
+  String error = "";
+
   Map loginData = {};
 
-  void _setCurrentUser(Map loginData) {
-    setState(() {
-      currentUser.value = loginData;
-    });
+  void _setCurrentUser(Map loginData) async {
+    if (_formKey.currentState!.validate()) {
+      final username = emailController.text;
+      final password = passwordController.text;
+      loginData = {
+        'username': username,
+        'password': password,
+      };
+      setState(() {
+        currentUser.value = loginData;
+      });
+      try {
+        loading = true;
+
+        final credential =
+            await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //     duration: Duration(milliseconds: 100),
+        //     content: Text("Envoi en cours"),
+        //   ),
+        // );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(milliseconds: 100),
+            content: Text("Envoi en cours"),
+          ),
+        );
+        Future.delayed(const Duration(milliseconds: 400), () {
+          context.navToview(const HomeScreen());
+        });
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          setState(() {
+            error = "No user found for that email.";
+          });
+          print('No user found for that email.');
+        } else if (e.code == 'wrong-password') {
+          setState(() {
+            error = "Wrong password provided for that user.";
+          });
+          print('Wrong password provided for that user.');
+        } else {
+          setState(() {
+            error = "Firebase error: " + e.message.toString();
+          });
+        }
+      } catch (e) {
+        setState(() {
+          error = "Une erreur inconnue : " + e.toString();
+        });
+        print(e);
+      }
+
+      loading = false;
+    }
+  }
+
+  String? _validateEmail(String? value) {
+    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+        r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+        r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+        r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+        r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+        r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+        r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+    final regex = RegExp(pattern);
+
+    return value!.isNotEmpty && !regex.hasMatch(value)
+        ? 'Enter a valid email address'
+        : null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // currentUser.addListener(_setCurrentUser);
   }
 
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -48,16 +141,16 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 SizedBox(
-                  height: context.height * 0.5,
+                  height: context.height * 0.48,
                   child: const Image(
                     image: AssetImage("assets/images/login.png"),
                   ),
                 ),
                 Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
-                      height: context.height * 0.25,
+                      height: context.height * 0.33,
                       child: Form(
                         key: _formKey,
                         child: Column(
@@ -69,18 +162,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 bottom: context.height * 0.01,
                               ),
                               child: TextFormField(
-                                controller: usernameController,
-                                validator: (value) {
-                                  if (value!.length < 3 || value.isEmpty) {
-                                    return "Minimun 3 caractères";
-                                  }
-                                  return null;
-                                },
+                                controller: emailController,
+                                validator: _validateEmail,
                                 decoration: const InputDecoration(
                                   filled: true,
                                   fillColor: Colors.white,
                                   contentPadding: EdgeInsets.all(15),
-                                  hintText: "Username",
+                                  hintText: "Email",
                                   hintStyle: TextStyle(
                                     height: 2,
                                     color: Color(0xffDDDADA),
@@ -91,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         BorderRadius.all(Radius.circular(15)),
                                     borderSide: BorderSide.none,
                                   ),
-                                  prefixIcon: Icon(Icons.person_outlined),
+                                  prefixIcon: Icon(Icons.mail_outline),
                                   prefixIconColor: Color(0xffDDDADA),
                                 ),
                               ),
@@ -99,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Padding(
                               padding: EdgeInsets.only(
                                 top: context.height * 0.01,
-                                bottom: context.height * 0.05,
+                                bottom: context.height * 0.07,
                               ),
                               child: TextFormField(
                                 controller: passwordController,
@@ -133,25 +221,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                    error.isNotEmpty
+                        ? Text(
+                            error,
+                            style: TextStyle(color: Colors.red),
+                          )
+                        : SizedBox.shrink(),
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          final username = usernameController.text;
+                          final username = emailController.text;
                           final password = passwordController.text;
                           loginData = {
                             'username': username,
                             'password': password,
                           };
                           _setCurrentUser(loginData);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              duration: Duration(milliseconds: 100),
-                              content: Text("Envoi en cours"),
-                            ),
-                          );
-                          Future.delayed(const Duration(milliseconds: 400), () {
-                            context.navToview(const HomeScreen());
-                          });
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -164,13 +249,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(13),
                         ),
                       ),
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(
-                          fontSize: 17,
-                          color: Color(0xFFF6F6F6),
-                        ),
-                      ),
+                      child: loading
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              "Login",
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Color(0xFFF6F6F6),
+                              ),
+                            ),
                     ),
                     Gap(context.height * 0.03),
                     Row(
