@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:daily_todo/data/models/personal_task.dart';
 import 'package:daily_todo/data/models/task_type.dart';
 import 'package:daily_todo/data/providers/personal_task_provider.dart';
 import 'package:daily_todo/pages/personal_task_screen.dart';
@@ -19,58 +21,54 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String username = "User x";
-  int personalTaskNumber = 12;
-  int teamTaskNumber = 8;
-  int taskProgess = 65;
-  int completedTask = 12;
-  int get pendingTask => context.watch<PersonalTaskProvider>().personalTasks.where((element) => element.isCompleted == false).length;
+  
+  int get personalTaskNumber => context
+      .watch<PersonalTaskProvider>()
+      .personalTasks
+      .length;
 
-  List<Map> personalTasks = [
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-  ];
+  int teamTaskNumber = 8;
+
+  int get taskProgess => (context
+      .watch<PersonalTaskProvider>()
+      .personalTasks
+      .where((element) => element.isCompleted == true).length * 100) ~/ context
+      .watch<PersonalTaskProvider>()
+      .personalTasks.length
+      ;
+
+  int get completedTask => context
+      .watch<PersonalTaskProvider>()
+      .personalTasks
+      .where((element) => element.isCompleted == true)
+      .length;
+
+  int get pendingTask => context
+      .watch<PersonalTaskProvider>()
+      .personalTasks
+      .where((element) => element.isCompleted == false)
+      .length;
+
+  List<PersonalTask> get personalTasks =>
+      context.watch<PersonalTaskProvider>().personalTasks;
 
   @override
   void initState() {
     super.initState();
+    CollectionReference usersCollection =
+        FirebaseFirestore.instance.collection('users');
+
+    DocumentReference usersDocument =
+        usersCollection.doc(FirebaseAuth.instance.currentUser!.uid);
+
+
+    CollectionReference personalTaskCollection =
+        usersDocument.collection("personal_tasks");
+
+    personalTaskCollection.snapshots().listen((event) {
+      debugPrint(event.docs.length.toString());
+      context.read<PersonalTaskProvider>().load();
+     });
   }
 
   @override
@@ -85,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Material(
       child: WillPopScope(
         onWillPop: () async {
-          return false;
+          return true;
         },
         child: Scaffold(
           appBar: AppBar(
@@ -109,7 +107,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          body: myBody(context),
+          body: context.watch<PersonalTaskProvider>().isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : myBody(context),
           floatingActionButton: FloatingActionButton(
             backgroundColor: const Color(0xFF9581FF),
             onPressed: () {
@@ -375,14 +377,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        personalTasks[index]['title'],
+                                        personalTasks[index].title,
                                         style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
-                                        "${personalTasks[index]['description'].substring(0, 40)} ...",
+                                        personalTasks[index]
+                                                    .description
+                                                    .length <
+                                                40
+                                            ? personalTasks[index].description
+                                            : "${personalTasks[index].description.substring(0, 40)} ...",
                                         maxLines: 2,
                                         overflow: TextOverflow
                                             .fade, // Ajoutez ceci pour montrer "..." en cas de coupure
@@ -399,7 +406,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              personalTasks[index]['author'],
+                                              personalTasks[index].author,
                                               style: TextStyle(
                                                 fontSize: 10,
                                                 color: const Color(0xFF0F071A)
@@ -422,7 +429,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   context
                                                       .formatTime(
                                                           personalTasks[index]
-                                                              ['created_at'])
+                                                              .createdAt)
                                                       .toString(),
                                                   style: TextStyle(
                                                     fontSize: 13,
@@ -443,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   context
                                                       .formatDate(
                                                           personalTasks[index]
-                                                              ['created_at'])
+                                                              .createdAt)
                                                       .toString(),
                                                   style: TextStyle(
                                                     fontSize: 13,
@@ -542,14 +549,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        personalTasks[index]['title'],
+                                        personalTasks[index].title,
                                         style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       Text(
-                                        "${personalTasks[index]['description'].substring(0, 40)} ...",
+                                        personalTasks[index]
+                                                    .description
+                                                    .length <
+                                                40
+                                            ? personalTasks[index].description
+                                            : "${personalTasks[index].description.substring(0, 40)} ...",
                                         maxLines: 2,
                                         overflow: TextOverflow
                                             .fade, // Ajoutez ceci pour montrer "..." en cas de coupure
@@ -566,7 +578,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              personalTasks[index]['author'],
+                                              personalTasks[index].author,
                                               style: TextStyle(
                                                 fontSize: 10,
                                                 color: const Color(0xFF0F071A)
@@ -589,7 +601,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   context
                                                       .formatTime(
                                                         personalTasks[index]
-                                                            ['created_at'],
+                                                            .createdAt,
                                                       )
                                                       .toString(),
                                                   style: TextStyle(
@@ -611,7 +623,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   context
                                                       .formatDate(
                                                         personalTasks[index]
-                                                            ['created_at'],
+                                                            .createdAt,
                                                       )
                                                       .toString(),
                                                   style: TextStyle(
@@ -669,6 +681,12 @@ class _BottomModalState extends State<BottomModal> {
             description: descriptionController.text,
           );
       debugPrint("Done");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          duration: Duration(milliseconds: 100),
+          content: Text("Tache ajouté"),
+        ),
+      );
     }
   }
 

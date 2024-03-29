@@ -1,11 +1,18 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:daily_todo/data/models/personal_task.dart';
-import 'package:daily_todo/utils/tasks.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:daily_todo/repositories/task_repository.dart';
 import 'package:flutter/foundation.dart';
 
 class PersonalTaskProvider extends ChangeNotifier {
+  final TaskRepository taskRepository;
+
+  PersonalTaskProvider({
+    required this.taskRepository,
+  }) {
+    load();
+  }
+
   List<PersonalTask> personalTasks = [];
+  bool isLoading = true;
 
   void _addPersonalTask(PersonalTask personalTask) {
     !personalTasks.contains(personalTask)
@@ -16,27 +23,9 @@ class PersonalTaskProvider extends ChangeNotifier {
 
   Future<void> addPersonalTask(
       {required String title, required String description}) async {
-    PersonalTask personalTask = PersonalTask(
-      id: generateFireStoreID(),
-      title: title,
-      description: description,
-    );
-
-    CollectionReference usersCollection =
-        FirebaseFirestore.instance.collection('users');
-
-    DocumentReference usersDocument =
-        usersCollection.doc(FirebaseAuth.instance.currentUser!.uid);
-
-    CollectionReference personalTaskCollection =
-        usersDocument.collection("personal_tasks");
-
-    DocumentReference taskDocument =
-        personalTaskCollection.doc(personalTask.id);
-
-    taskDocument.set(personalTask.toJson());
-
-    _addPersonalTask(personalTask);
+    taskRepository.add(title, description).then((value) {
+      value == null ? null : _addPersonalTask(value);
+    });
     // notifyListeners();
   }
 
@@ -45,23 +34,44 @@ class PersonalTaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void complete(String id) {
+  void complete(String id) async {
     PersonalTask task = personalTasks.firstWhere((element) => element.id == id);
     if (task.isCompleted == false) {
-      task = task.copyWith(isCompleted: true);
-      removePersonalTask(id);
-      _addPersonalTask(task);
+      task = await taskRepository.update(id: id, isCompleted: true);
+
+      personalTasks = personalTasks.map((e) => e.id == id ? task : e).toList();
+
       notifyListeners();
     }
   }
 
-  void notComplete(String id) {
+  void delete(String id) async {
+    PersonalTask task = personalTasks.firstWhere((element) => element.id == id);
+
+    // task = await taskRepository.delete(id: id);
+    task = await taskRepository.delete(id: id);
+
+    personalTasks = personalTasks..removeWhere((element) => element.id == id);
+
+    notifyListeners();
+  }
+
+  void notComplete(String id) async {
     PersonalTask task = personalTasks.firstWhere((element) => element.id == id);
     if (task.isCompleted == true) {
-      task = task.copyWith(isCompleted: false);
-      removePersonalTask(id);
-      _addPersonalTask(task);
+      task = await taskRepository.update(id: id, isCompleted: false);
+
+      personalTasks = personalTasks.map((e) => e.id == id ? task : e).toList();
+
       notifyListeners();
     }
+  }
+  
+  void load() {
+    taskRepository.get().then((value) {
+      personalTasks = value;
+      isLoading = false;
+      notifyListeners();
+    });
   }
 }

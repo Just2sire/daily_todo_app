@@ -1,16 +1,20 @@
 // import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:daily_todo/data/models/personal_task.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class DetailsScreen extends StatefulWidget {
-  const DetailsScreen({super.key});
+  const DetailsScreen({super.key, required this.task});
+
+  final PersonalTask task;
 
   @override
   State<DetailsScreen> createState() => _DetailsScreenState();
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
+
   Map singleTask = {
     'title': "UX/UI Design",
     'description':
@@ -38,6 +42,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Material(
       child: Scaffold(
         appBar: AppBar(
@@ -110,7 +115,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              singleTask['title'],
+                              widget.task.title,
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -136,7 +141,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       Text(
                                         context
                                             .formatTime(
-                                                singleTask['created_at'])
+                                                widget.task.createdAt)
                                             .toString(),
                                         style: TextStyle(
                                           fontSize: 13,
@@ -155,7 +160,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       Text(
                                         context
                                             .formatDate(
-                                                singleTask['created_at'])
+                                                widget.task.createdAt)
                                             .toString(),
                                         style: TextStyle(
                                           fontSize: 13,
@@ -206,7 +211,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
                         child: Text(
-                          "${singleTask['description']}",
+                          "${widget.task.description}",
                           style: TextStyle(
                             color: const Color(0xFF0F071A).withOpacity(0.4),
                           ),
@@ -223,3 +228,4 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 }
+

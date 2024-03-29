@@ -68,7 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> with StateLoading {
       //     .requestFocus(FocusNode);
 
       try {
-        final credential =
+        // final credential =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: password,

@@ -1,9 +1,11 @@
+import 'package:daily_todo/data/models/personal_task.dart';
+import 'package:daily_todo/data/providers/personal_task_provider.dart';
 import 'package:daily_todo/pages/details_screen.dart';
 import 'package:daily_todo/utils/build_context_extension.dart';
-import 'package:daily_todo/utils/tasks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class PersonalTaskscreen extends StatefulWidget {
   const PersonalTaskscreen({super.key});
@@ -13,106 +15,19 @@ class PersonalTaskscreen extends StatefulWidget {
 }
 
 class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
-  List<Map> personalTasks = [
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': true,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': true,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': true,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': false,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': true,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': true,
-    },
-    {
-      'title': "UX/UI Design",
-      'description':
-          "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
-      'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
-      'isCompleted': true,
-    },
-  ];
-
-  List<Map> taskDone = allPersonalTasks
-      .where((element) => element["isCompleted"] == true)
-      .toList();
-  List<Map> taskInProgress = allPersonalTasks
-      .where((element) => element["isCompleted"] == false)
-      .toList();
+  
 
   @override
   Widget build(BuildContext context) {
+
+    final personalTasks = context.watch<PersonalTaskProvider>().personalTasks;
+
+    List<PersonalTask> taskDone =
+        personalTasks.where((element) => element.isCompleted == true).toList();
+
+    List<PersonalTask> taskInProgress =
+        personalTasks.where((element) => element.isCompleted == false).toList();
+
     return Material(
       child: DefaultTabController(
         length: 3,
@@ -166,8 +81,11 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                 child: ListView.builder(
                   itemCount: personalTasks.length,
                   itemBuilder: (context, index) {
+                    final PersonalTask task = personalTasks[index];
                     return GestureDetector(
-                      onTap: () => context.navToview(const DetailsScreen()),
+                      onTap: () => context.navToview(DetailsScreen(
+                        task: task,
+                      )),
                       child: Padding(
                         padding: EdgeInsets.only(
                           left: context.width * 0.04,
@@ -183,12 +101,7 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                 children: [
                                   SlidableAction(
                                     onPressed: (context) {
-                                      setState(() {
-                                        personalTasks[index]['isCompleted'] ==
-                                            false;
-                                      });
-                                      print(
-                                          personalTasks[index]['isCompleted']);
+                                      context.read<PersonalTaskProvider>().notComplete(task.id);
                                     },
                                     label: "Progress",
                                     foregroundColor: const Color(0xFF0F071A)
@@ -201,12 +114,7 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                   ),
                                   SlidableAction(
                                     onPressed: (context) {
-                                      setState(() {
-                                        personalTasks[index]['isCompleted'] ==
-                                            true;
-                                      });
-                                      print(
-                                          personalTasks[index]['isCompleted']);
+                                      context.read<PersonalTaskProvider>().complete(task.id);
                                     },
                                     label: "Done",
                                     foregroundColor: const Color(0xFF0F071A)
@@ -216,6 +124,21 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                     ),
                                     backgroundColor: const Color(0xFF0F071A)
                                         .withOpacity(0.1),
+                                  ),
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      context.read<PersonalTaskProvider>().delete(task.id);
+                                    },
+                                    label: "Delete",
+                                    foregroundColor:
+                                        const Color.fromARGB(255, 177, 40, 1)
+                                            .withOpacity(0.7),
+                                    borderRadius: const BorderRadius.horizontal(
+                                      right: Radius.circular(3),
+                                    ),
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 183, 3, 42)
+                                            .withOpacity(0.7),
                                   ),
                                 ],
                               ),
@@ -250,14 +173,20 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            personalTasks[index]['title'],
+                                            personalTasks[index].title,
                                             style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           Text(
-                                            "${personalTasks[index]['description'].substring(0, 40)} ...",
+                                            personalTasks[index]
+                                                        .description
+                                                        .length >
+                                                    40
+                                                ? "${personalTasks[index].description.substring(0, 40)}..."
+                                                : personalTasks[index]
+                                                    .description,
                                             maxLines: 2,
                                             overflow: TextOverflow
                                                 .fade, // Ajoutez ceci pour montrer "..." en cas de coupure
@@ -275,8 +204,7 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  personalTasks[index]
-                                                      ['author'],
+                                                  personalTasks[index].author,
                                                   style: TextStyle(
                                                     fontSize: 10,
                                                     color:
@@ -301,8 +229,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       context
                                                           .formatTime(
                                                               personalTasks[
-                                                                      index][
-                                                                  'created_at'])
+                                                                      index]
+                                                                  .createdAt)
                                                           .toString(),
                                                       style: TextStyle(
                                                         fontSize: 13,
@@ -324,8 +252,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       context
                                                           .formatDate(
                                                               personalTasks[
-                                                                      index][
-                                                                  'created_at'])
+                                                                      index]
+                                                                  .createdAt)
                                                           .toString(),
                                                       style: TextStyle(
                                                         fontSize: 13,
@@ -358,8 +286,11 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                 child: ListView.builder(
                   itemCount: taskInProgress.length,
                   itemBuilder: (context, index) {
+                    final PersonalTask task = taskInProgress[index];
                     return GestureDetector(
-                      onTap: () => context.navToview(const DetailsScreen()),
+                      onTap: () => context.navToview(DetailsScreen(
+                        task: task,
+                      )),
                       child: Padding(
                         padding: EdgeInsets.only(
                           left: context.width * 0.04,
@@ -373,31 +304,11 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                               endActionPane: ActionPane(
                                 motion: const ScrollMotion(),
                                 children: [
-                                  // SlidableAction(
-                                  //   onPressed: (context) {
-                                  //     setState(() {
-                                  //       taskInProgress[index]['isCompleted'] ==
-                                  //           false;
-                                  //     });
-                                  //     print(taskInProgress[index]['isCompleted']);
-                                  //   },
-                                  //   label: "Progress",
-                                  //   foregroundColor:
-                                  //       const Color(0xFF0F071A).withOpacity(0.4),
-                                  //   backgroundColor:
-                                  //       const Color(0xFF9581FF).withOpacity(0.3),
-                                  //   borderRadius: const BorderRadius.horizontal(
-                                  //     right: Radius.circular(3),
-                                  //   ),
-                                  // ),
                                   SlidableAction(
                                     onPressed: (context) {
-                                      setState(() {
-                                        taskInProgress[index]['isCompleted'] ==
-                                            true;
-                                      });
-                                      print(
-                                          taskInProgress[index]['isCompleted']);
+                                      context
+                                          .read<PersonalTaskProvider>()
+                                          .complete(task.id);
                                     },
                                     label: "Done",
                                     foregroundColor: const Color(0xFF0F071A)
@@ -441,14 +352,20 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            taskInProgress[index]['title'],
+                                            taskInProgress[index].title,
                                             style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           Text(
-                                            "${taskInProgress[index]['description'].substring(0, 40)} ...",
+                                            taskInProgress[index]
+                                                        .description
+                                                        .length >
+                                                    40
+                                                ? "${taskInProgress[index].description.substring(0, 40)} ..."
+                                                : taskInProgress[index]
+                                                    .description,
                                             maxLines: 2,
                                             overflow: TextOverflow
                                                 .fade, // Ajoutez ceci pour montrer "..." en cas de coupure
@@ -466,8 +383,7 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  taskInProgress[index]
-                                                      ['author'],
+                                                  taskInProgress[index].author,
                                                   style: TextStyle(
                                                     fontSize: 10,
                                                     color:
@@ -492,8 +408,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       context
                                                           .formatTime(
                                                               taskInProgress[
-                                                                      index][
-                                                                  'created_at'])
+                                                                      index]
+                                                                  .createdAt)
                                                           .toString(),
                                                       style: TextStyle(
                                                         fontSize: 13,
@@ -515,8 +431,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       context
                                                           .formatDate(
                                                               taskInProgress[
-                                                                      index][
-                                                                  'created_at'])
+                                                                      index]
+                                                                  .createdAt)
                                                           .toString(),
                                                       style: TextStyle(
                                                         fontSize: 13,
@@ -549,8 +465,11 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                 child: ListView.builder(
                   itemCount: taskDone.length,
                   itemBuilder: (context, index) {
+                    final PersonalTask task = taskDone[index];
                     return GestureDetector(
-                      onTap: () => context.navToview(const DetailsScreen()),
+                      onTap: () => context.navToview(DetailsScreen(
+                        task: task,
+                      )),
                       child: Padding(
                         padding: EdgeInsets.only(
                           left: context.width * 0.04,
@@ -566,10 +485,10 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                 children: [
                                   SlidableAction(
                                     onPressed: (context) {
-                                      setState(() {
-                                        taskDone[index]['isCompleted'] == false;
-                                      });
-                                      print(taskDone[index]['isCompleted']);
+                                      context
+                                          .read<PersonalTaskProvider>()
+                                          .notComplete(task.id);
+                                      // print(taskDone[index].isCompleted);
                                     },
                                     label: "Progress",
                                     foregroundColor: const Color(0xFF0F071A)
@@ -580,23 +499,6 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                       right: Radius.circular(3),
                                     ),
                                   ),
-                                  // SlidableAction(
-                                  //   onPressed: (context) {
-                                  //     setState(() {
-                                  //       taskDone[index]['isCompleted'] ==
-                                  //           true;
-                                  //     });
-                                  //     print(taskDone[index]['isCompleted']);
-                                  //   },
-                                  //   label: "Done",
-                                  //   foregroundColor:
-                                  //       const Color(0xFF0F071A).withOpacity(0.4),
-                                  //   borderRadius: const BorderRadius.horizontal(
-                                  //     right: Radius.circular(3),
-                                  //   ),
-                                  //   backgroundColor:
-                                  //       const Color(0xFF0F071A).withOpacity(0.1),
-                                  // ),
                                 ],
                               ),
                               child: Container(
@@ -630,14 +532,17 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            taskDone[index]['title'],
+                                            taskDone[index].title,
                                             style: const TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           Text(
-                                            "${taskDone[index]['description'].substring(0, 40)} ...",
+                                            taskDone[index].description.length >
+                                                    40
+                                                ? "${taskDone[index].description.substring(0, 40)} ..."
+                                                : taskDone[index].description,
                                             maxLines: 2,
                                             overflow: TextOverflow
                                                 .fade, // Ajoutez ceci pour montrer "..." en cas de coupure
@@ -655,7 +560,7 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  taskDone[index]['author'],
+                                                  taskDone[index].author,
                                                   style: TextStyle(
                                                     fontSize: 10,
                                                     color:
@@ -678,9 +583,9 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                     Gap(context.width * 0.011),
                                                     Text(
                                                       context
-                                                          .formatTime(taskDone[
-                                                                  index]
-                                                              ['created_at'])
+                                                          .formatTime(
+                                                              taskDone[index]
+                                                                  .createdAt)
                                                           .toString(),
                                                       style: TextStyle(
                                                         fontSize: 13,
@@ -700,9 +605,9 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                     Gap(context.width * 0.011),
                                                     Text(
                                                       context
-                                                          .formatDate(taskDone[
-                                                                  index]
-                                                              ['created_at'])
+                                                          .formatDate(
+                                                              taskDone[index]
+                                                                  .createdAt)
                                                           .toString(),
                                                       style: TextStyle(
                                                         fontSize: 13,

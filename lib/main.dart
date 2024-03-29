@@ -1,5 +1,7 @@
 import 'package:daily_todo/data/providers/personal_task_provider.dart';
 import 'package:daily_todo/pages/splash_screen.dart';
+import 'package:daily_todo/repositories/firestore_task_repository.dart';
+// import 'package:daily_todo/repositories/task_repository.dart';
 import 'package:daily_todo/services/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -17,7 +19,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => PersonalTaskProvider())
+        ChangeNotifierProvider(create: (context) => PersonalTaskProvider(taskRepository: FireStoreTaskRepository())),
       ],
       child: const MainApp(),
     ),
