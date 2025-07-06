@@ -31,7 +31,7 @@ void main() {
 
   user["age"] = 18;
 
-  User user2 = new User(name: "abalo", age: 20, username: "Amah");
+  User user2 = User(name: "abalo", age: 20, username: "Amah");
   user2.name = "Amah";
 }
 

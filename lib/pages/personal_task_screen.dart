@@ -15,11 +15,8 @@ class PersonalTaskscreen extends StatefulWidget {
 }
 
 class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
-  
-
   @override
   Widget build(BuildContext context) {
-
     final personalTasks = context.watch<PersonalTaskProvider>().personalTasks;
 
     List<PersonalTask> taskDone =
@@ -101,44 +98,50 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                 children: [
                                   SlidableAction(
                                     onPressed: (context) {
-                                      context.read<PersonalTaskProvider>().notComplete(task.id);
+                                      context
+                                          .read<PersonalTaskProvider>()
+                                          .notComplete(task.id);
                                     },
                                     label: "Progress",
                                     foregroundColor: const Color(0xFF0F071A)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     backgroundColor: const Color(0xFF9581FF)
-                                        .withOpacity(0.3),
+                                        .withValues(alpha: 0.3),
                                     borderRadius: const BorderRadius.horizontal(
                                       right: Radius.circular(3),
                                     ),
                                   ),
                                   SlidableAction(
                                     onPressed: (context) {
-                                      context.read<PersonalTaskProvider>().complete(task.id);
+                                      context
+                                          .read<PersonalTaskProvider>()
+                                          .complete(task.id);
                                     },
                                     label: "Done",
                                     foregroundColor: const Color(0xFF0F071A)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     borderRadius: const BorderRadius.horizontal(
                                       right: Radius.circular(3),
                                     ),
                                     backgroundColor: const Color(0xFF0F071A)
-                                        .withOpacity(0.1),
+                                        .withValues(alpha: 0.1),
                                   ),
                                   SlidableAction(
                                     onPressed: (context) {
-                                      context.read<PersonalTaskProvider>().delete(task.id);
+                                      context
+                                          .read<PersonalTaskProvider>()
+                                          .delete(task.id);
                                     },
                                     label: "Delete",
                                     foregroundColor:
                                         const Color.fromARGB(255, 177, 40, 1)
-                                            .withOpacity(0.7),
+                                            .withValues(alpha: 0.7),
                                     borderRadius: const BorderRadius.horizontal(
                                       right: Radius.circular(3),
                                     ),
                                     backgroundColor:
                                         const Color.fromARGB(255, 183, 3, 42)
-                                            .withOpacity(0.7),
+                                            .withValues(alpha: 0.7),
                                   ),
                                 ],
                               ),
@@ -193,7 +196,7 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: const Color(0xFF0F071A)
-                                                  .withOpacity(0.3),
+                                                  .withValues(alpha: 0.3),
                                             ),
                                           ),
                                           SizedBox(
@@ -209,7 +212,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                     fontSize: 10,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                 ),
                                                 Row(
@@ -222,7 +226,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       size: 22,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                     Gap(context.width * 0.011),
                                                     Text(
@@ -236,7 +241,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                         fontSize: 13,
                                                         color: const Color(
                                                                 0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                       ),
                                                     ),
                                                     Gap(context.width * 0.035),
@@ -245,7 +251,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       size: 22,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                     Gap(context.width * 0.011),
                                                     Text(
@@ -259,7 +266,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                         fontSize: 13,
                                                         color: const Color(
                                                                 0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                       ),
                                                     ),
                                                   ],
@@ -312,12 +320,12 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                     },
                                     label: "Done",
                                     foregroundColor: const Color(0xFF0F071A)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     borderRadius: const BorderRadius.horizontal(
                                       right: Radius.circular(3),
                                     ),
                                     backgroundColor: const Color(0xFF0F071A)
-                                        .withOpacity(0.1),
+                                        .withValues(alpha: 0.1),
                                   ),
                                 ],
                               ),
@@ -372,7 +380,7 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: const Color(0xFF0F071A)
-                                                  .withOpacity(0.3),
+                                                  .withValues(alpha: 0.3),
                                             ),
                                           ),
                                           SizedBox(
@@ -388,7 +396,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                     fontSize: 10,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                 ),
                                                 Row(
@@ -401,7 +410,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       size: 22,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                     Gap(context.width * 0.011),
                                                     Text(
@@ -415,7 +425,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                         fontSize: 13,
                                                         color: const Color(
                                                                 0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                       ),
                                                     ),
                                                     Gap(context.width * 0.035),
@@ -424,7 +435,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       size: 22,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                     Gap(context.width * 0.011),
                                                     Text(
@@ -438,7 +450,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                         fontSize: 13,
                                                         color: const Color(
                                                                 0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                       ),
                                                     ),
                                                   ],
@@ -488,13 +501,13 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                       context
                                           .read<PersonalTaskProvider>()
                                           .notComplete(task.id);
-                                      // print(taskDone[index].isCompleted);
+                                      // debugPrint(taskDone[index].isCompleted);
                                     },
                                     label: "Progress",
                                     foregroundColor: const Color(0xFF0F071A)
-                                        .withOpacity(0.4),
+                                        .withValues(alpha: 0.4),
                                     backgroundColor: const Color(0xFF9581FF)
-                                        .withOpacity(0.3),
+                                        .withValues(alpha: 0.3),
                                     borderRadius: const BorderRadius.horizontal(
                                       right: Radius.circular(3),
                                     ),
@@ -549,7 +562,7 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: const Color(0xFF0F071A)
-                                                  .withOpacity(0.3),
+                                                  .withValues(alpha: 0.3),
                                             ),
                                           ),
                                           SizedBox(
@@ -565,7 +578,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                     fontSize: 10,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                 ),
                                                 Row(
@@ -578,7 +592,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       size: 22,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                     Gap(context.width * 0.011),
                                                     Text(
@@ -591,7 +606,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                         fontSize: 13,
                                                         color: const Color(
                                                                 0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                       ),
                                                     ),
                                                     Gap(context.width * 0.035),
@@ -600,7 +616,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                       size: 22,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                     Gap(context.width * 0.011),
                                                     Text(
@@ -613,7 +630,8 @@ class _PersonalTaskscreenState extends State<PersonalTaskscreen> {
                                                         fontSize: 13,
                                                         color: const Color(
                                                                 0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                       ),
                                                     ),
                                                   ],

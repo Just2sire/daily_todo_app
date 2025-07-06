@@ -23,7 +23,7 @@ class PersonalTask {
       'title': title,
       'description': description,
       'author': "Me",
-      'created_at': createdAt.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
       'is_completed': isCompleted,
     };
   }
@@ -35,9 +35,9 @@ class PersonalTask {
       description: map['description'],
       author: map['author'],
       isCompleted: map['is_completed'],
-      createdAt: DateTime.tryParse(map['created_at']),
+      createdAt: DateTime.tryParse(map['createdAt']),
     );
-  } 
+  }
 
   PersonalTask copyWith({
     String? author,

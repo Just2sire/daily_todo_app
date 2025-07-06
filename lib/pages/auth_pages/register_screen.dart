@@ -69,21 +69,22 @@ class _RegisterScreenState extends State<RegisterScreen> with StateLoading {
 
       try {
         // final credential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
-          print('The password provided is too weak.');
+          debugPrint('The password provided is too weak.');
         } else if (e.code == 'email-already-in-use') {
-          print('The account already exists for that email.');
+          debugPrint('The account already exists for that email.');
         }
       } catch (e) {
-        print(e);
+        debugPrint(e.toString());
       }
 
       Future.delayed(const Duration(milliseconds: 400), () {
+        if (!mounted) return;
         context.navToview(const HomeScreen());
       });
 
@@ -251,7 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> with StateLoading {
                           style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
-                              color: Colors.grey.withOpacity(0.4)),
+                              color: Colors.grey.withValues(alpha: 0.4)),
                         ),
                         GestureDetector(
                           onTap: () {

@@ -15,7 +15,7 @@ class ThemeClass {
     colorScheme: ColorScheme.fromSeed(
       primary: const Color(0xFF9581FF),
       secondary: const Color(0xFF0F071A),
-      background: const Color(0xFF9581FF),
+      // background: const Color(0xFF9581FF),
       surface: Colors.white,
       tertiary: const Color(0xFFFFC804),
       seedColor: const Color(0xFFF6F6F6),

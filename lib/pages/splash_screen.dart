@@ -32,6 +32,7 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     Future.delayed(const Duration(seconds: 3), () {
+      if (!mounted) return;
       if (FirebaseAuth.instance.currentUser == null) {
         context.navToview(const LoginScreen());
       } else {

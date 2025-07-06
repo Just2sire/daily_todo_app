@@ -14,13 +14,12 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-
   Map singleTask = {
     'title': "UX/UI Design",
     'description':
         "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines,Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more more lines, Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
     'author': "John Doe",
-    'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+    'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
     'isCompleted': true,
   };
 
@@ -42,7 +41,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Material(
       child: Scaffold(
         appBar: AppBar(
@@ -135,18 +133,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         Icons.access_time,
                                         size: 22,
                                         color: const Color(0xFF0F071A)
-                                            .withOpacity(0.2),
+                                            .withValues(alpha: 0.2),
                                       ),
                                       Gap(context.width * 0.011),
                                       Text(
                                         context
-                                            .formatTime(
-                                                widget.task.createdAt)
+                                            .formatTime(widget.task.createdAt)
                                             .toString(),
                                         style: TextStyle(
                                           fontSize: 13,
                                           color: const Color(0xFF0F071A)
-                                              .withOpacity(0.2),
+                                              .withValues(alpha: 0.2),
                                         ),
                                       ),
                                       Gap(context.width * 0.035),
@@ -154,18 +151,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                         Icons.calendar_month,
                                         size: 22,
                                         color: const Color(0xFF0F071A)
-                                            .withOpacity(0.2),
+                                            .withValues(alpha: 0.2),
                                       ),
                                       Gap(context.width * 0.011),
                                       Text(
                                         context
-                                            .formatDate(
-                                                widget.task.createdAt)
+                                            .formatDate(widget.task.createdAt)
                                             .toString(),
                                         style: TextStyle(
                                           fontSize: 13,
                                           color: const Color(0xFF0F071A)
-                                              .withOpacity(0.2),
+                                              .withValues(alpha: 0.2),
                                         ),
                                       ),
                                     ],
@@ -183,7 +179,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         icon: DecoratedBox(
                           decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: const Color(0xFF9581FF).withOpacity(0.15)),
+                              color: const Color(0xFF9581FF).withValues(alpha: 0.15)),
                           child: const Icon(
                             Icons.keyboard_arrow_down,
                             size: 33,
@@ -211,9 +207,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                         ),
                         child: Text(
-                          "${widget.task.description}",
+                          widget.task.description,
                           style: TextStyle(
-                            color: const Color(0xFF0F071A).withOpacity(0.4),
+                            color: const Color(0xFF0F071A).withValues(alpha: 0.4),
                           ),
                         ),
                       ),
@@ -228,4 +224,3 @@ class _DetailsScreenState extends State<DetailsScreen> {
     );
   }
 }
-

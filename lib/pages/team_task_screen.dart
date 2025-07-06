@@ -18,7 +18,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': true,
     },
     {
@@ -26,7 +26,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': false,
     },
     {
@@ -34,7 +34,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': true,
     },
     {
@@ -42,7 +42,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': false,
     },
     {
@@ -50,7 +50,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': false,
     },
     {
@@ -58,7 +58,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': true,
     },
     {
@@ -66,7 +66,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': false,
     },
     {
@@ -74,7 +74,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': false,
     },
     {
@@ -82,7 +82,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': true,
     },
     {
@@ -90,7 +90,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': true,
     },
     {
@@ -98,17 +98,15 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
       'description':
           "Pratice how to be better in design in general. Nothing special to say but i just want to write a few more lines",
       'author': "John Doe",
-      'created_at': DateTime(2023, 10, 11, 07, 36, 56),
+      'createdAt': DateTime(2023, 10, 11, 07, 36, 56),
       'isCompleted': true,
     },
   ];
 
-  List<Map> taskDone = allTeamTasks
-      .where((element) => element["isCompleted"] == true)
-      .toList();
-  List<Map> taskInProgress = allTeamTasks
-      .where((element) => element["isCompleted"] == false)
-      .toList();
+  List<Map> taskDone =
+      allTeamTasks.where((element) => element["isCompleted"] == true).toList();
+  List<Map> taskInProgress =
+      allTeamTasks.where((element) => element["isCompleted"] == false).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -181,16 +179,15 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                 SlidableAction(
                                   onPressed: (context) {
                                     setState(() {
-                                      teamTasks[index]['isCompleted'] ==
-                                          false;
+                                      teamTasks[index]['isCompleted'] == false;
                                     });
-                                    print(teamTasks[index]['isCompleted']);
+                                    debugPrint(teamTasks[index]['isCompleted']);
                                   },
                                   label: "Progress",
-                                  foregroundColor:
-                                      const Color(0xFF0F071A).withOpacity(0.4),
-                                  backgroundColor:
-                                      const Color(0xFFFFC804).withOpacity(0.3),
+                                  foregroundColor: const Color(0xFF0F071A)
+                                      .withValues(alpha: 0.4),
+                                  backgroundColor: const Color(0xFFFFC804)
+                                      .withValues(alpha: 0.3),
                                   borderRadius: const BorderRadius.horizontal(
                                     right: Radius.circular(3),
                                   ),
@@ -198,19 +195,18 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                 SlidableAction(
                                   onPressed: (context) {
                                     setState(() {
-                                      teamTasks[index]['isCompleted'] ==
-                                          true;
+                                      teamTasks[index]['isCompleted'] == true;
                                     });
-                                    print(teamTasks[index]['isCompleted']);
+                                    debugPrint(teamTasks[index]['isCompleted']);
                                   },
                                   label: "Done",
-                                  foregroundColor:
-                                      const Color(0xFF0F071A).withOpacity(0.4),
+                                  foregroundColor: const Color(0xFF0F071A)
+                                      .withValues(alpha: 0.4),
                                   borderRadius: const BorderRadius.horizontal(
                                     right: Radius.circular(3),
                                   ),
-                                  backgroundColor:
-                                      const Color(0xFF0F071A).withOpacity(0.1),
+                                  backgroundColor: const Color(0xFF0F071A)
+                                      .withValues(alpha: 0.1),
                                 ),
                               ],
                             ),
@@ -259,7 +255,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                           style: TextStyle(
                                             fontSize: 13,
                                             color: const Color(0xFF0F071A)
-                                                .withOpacity(0.3),
+                                                .withValues(alpha: 0.3),
                                           ),
                                         ),
                                         SizedBox(
@@ -273,7 +269,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                 style: TextStyle(
                                                   fontSize: 10,
                                                   color: const Color(0xFF0F071A)
-                                                      .withOpacity(0.2),
+                                                      .withValues(alpha: 0.2),
                                                 ),
                                               ),
                                               Row(
@@ -286,20 +282,22 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                     size: 22,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                   Gap(context.width * 0.011),
                                                   Text(
                                                     context
                                                         .formatTime(
                                                             teamTasks[index]
-                                                                ['created_at'])
+                                                                ['createdAt'])
                                                         .toString(),
                                                     style: TextStyle(
                                                       fontSize: 13,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                   ),
                                                   Gap(context.width * 0.035),
@@ -308,20 +306,22 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                     size: 22,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                   Gap(context.width * 0.011),
                                                   Text(
                                                     context
                                                         .formatDate(
                                                             teamTasks[index]
-                                                                ['created_at'])
+                                                                ['createdAt'])
                                                         .toString(),
                                                     style: TextStyle(
                                                       fontSize: 13,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                   ),
                                                 ],
@@ -366,13 +366,13 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                 //       taskInProgress[index]['isCompleted'] ==
                                 //           false;
                                 //     });
-                                //     print(taskInProgress[index]['isCompleted']);
+                                //     debugPrint(taskInProgress[index]['isCompleted']);
                                 //   },
                                 //   label: "Progress",
                                 //   foregroundColor:
-                                //       const Color(0xFF0F071A).withOpacity(0.4),
+                                //       const Color(0xFF0F071A).withValues(alpha: 0.4),
                                 //   backgroundColor:
-                                //       const Color(0xFFFFC804).withOpacity(0.3),
+                                //       const Color(0xFFFFC804).withValues(alpha: 0.3),
                                 //   borderRadius: const BorderRadius.horizontal(
                                 //     right: Radius.circular(3),
                                 //   ),
@@ -383,16 +383,17 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                       taskInProgress[index]['isCompleted'] ==
                                           true;
                                     });
-                                    print(taskInProgress[index]['isCompleted']);
+                                    debugPrint(
+                                        taskInProgress[index]['isCompleted']);
                                   },
                                   label: "Done",
-                                  foregroundColor:
-                                      const Color(0xFF0F071A).withOpacity(0.4),
+                                  foregroundColor: const Color(0xFF0F071A)
+                                      .withValues(alpha: 0.4),
                                   borderRadius: const BorderRadius.horizontal(
                                     right: Radius.circular(3),
                                   ),
-                                  backgroundColor:
-                                      const Color(0xFF0F071A).withOpacity(0.1),
+                                  backgroundColor: const Color(0xFF0F071A)
+                                      .withValues(alpha: 0.1),
                                 ),
                               ],
                             ),
@@ -441,7 +442,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                           style: TextStyle(
                                             fontSize: 13,
                                             color: const Color(0xFF0F071A)
-                                                .withOpacity(0.3),
+                                                .withValues(alpha: 0.3),
                                           ),
                                         ),
                                         SizedBox(
@@ -455,7 +456,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                 style: TextStyle(
                                                   fontSize: 10,
                                                   color: const Color(0xFF0F071A)
-                                                      .withOpacity(0.2),
+                                                      .withValues(alpha: 0.2),
                                                 ),
                                               ),
                                               Row(
@@ -468,7 +469,8 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                     size: 22,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                   Gap(context.width * 0.011),
                                                   Text(
@@ -476,13 +478,14 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                         .formatTime(
                                                             taskInProgress[
                                                                     index]
-                                                                ['created_at'])
+                                                                ['createdAt'])
                                                         .toString(),
                                                     style: TextStyle(
                                                       fontSize: 13,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                   ),
                                                   Gap(context.width * 0.035),
@@ -491,7 +494,8 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                     size: 22,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                   Gap(context.width * 0.011),
                                                   Text(
@@ -499,13 +503,14 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                         .formatDate(
                                                             taskInProgress[
                                                                     index]
-                                                                ['created_at'])
+                                                                ['createdAt'])
                                                         .toString(),
                                                     style: TextStyle(
                                                       fontSize: 13,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                   ),
                                                 ],
@@ -547,16 +552,15 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                 SlidableAction(
                                   onPressed: (context) {
                                     setState(() {
-                                      taskDone[index]['isCompleted'] ==
-                                          false;
+                                      taskDone[index]['isCompleted'] == false;
                                     });
-                                    print(taskDone[index]['isCompleted']);
+                                    debugPrint(taskDone[index]['isCompleted']);
                                   },
                                   label: "Progress",
-                                  foregroundColor:
-                                      const Color(0xFF0F071A).withOpacity(0.4),
-                                  backgroundColor:
-                                      const Color(0xFFFFC804).withOpacity(0.3),
+                                  foregroundColor: const Color(0xFF0F071A)
+                                      .withValues(alpha: 0.4),
+                                  backgroundColor: const Color(0xFFFFC804)
+                                      .withValues(alpha: 0.3),
                                   borderRadius: const BorderRadius.horizontal(
                                     right: Radius.circular(3),
                                   ),
@@ -567,16 +571,16 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                 //       taskDone[index]['isCompleted'] ==
                                 //           true;
                                 //     });
-                                //     print(taskDone[index]['isCompleted']);
+                                //     debugPrint(taskDone[index]['isCompleted']);
                                 //   },
                                 //   label: "Done",
                                 //   foregroundColor:
-                                //       const Color(0xFF0F071A).withOpacity(0.4),
+                                //       const Color(0xFF0F071A).withValues(alpha: 0.4),
                                 //   borderRadius: const BorderRadius.horizontal(
                                 //     right: Radius.circular(3),
                                 //   ),
                                 //   backgroundColor:
-                                //       const Color(0xFF0F071A).withOpacity(0.1),
+                                //       const Color(0xFF0F071A).withValues(alpha: 0.1),
                                 // ),
                               ],
                             ),
@@ -625,7 +629,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                           style: TextStyle(
                                             fontSize: 13,
                                             color: const Color(0xFF0F071A)
-                                                .withOpacity(0.3),
+                                                .withValues(alpha: 0.3),
                                           ),
                                         ),
                                         SizedBox(
@@ -639,7 +643,7 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                 style: TextStyle(
                                                   fontSize: 10,
                                                   color: const Color(0xFF0F071A)
-                                                      .withOpacity(0.2),
+                                                      .withValues(alpha: 0.2),
                                                 ),
                                               ),
                                               Row(
@@ -652,20 +656,22 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                     size: 22,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                   Gap(context.width * 0.011),
                                                   Text(
                                                     context
                                                         .formatTime(
                                                             taskDone[index]
-                                                                ['created_at'])
+                                                                ['createdAt'])
                                                         .toString(),
                                                     style: TextStyle(
                                                       fontSize: 13,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                   ),
                                                   Gap(context.width * 0.035),
@@ -674,20 +680,22 @@ class _TeamTaskscreenState extends State<TeamTaskscreen> {
                                                     size: 22,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                   Gap(context.width * 0.011),
                                                   Text(
                                                     context
                                                         .formatDate(
                                                             taskDone[index]
-                                                                ['created_at'])
+                                                                ['createdAt'])
                                                         .toString(),
                                                     style: TextStyle(
                                                       fontSize: 13,
                                                       color: const Color(
                                                               0xFF0F071A)
-                                                          .withOpacity(0.2),
+                                                          .withValues(
+                                                              alpha: 0.2),
                                                     ),
                                                   ),
                                                 ],

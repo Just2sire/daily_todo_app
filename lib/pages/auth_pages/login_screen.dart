@@ -52,10 +52,11 @@ class _LoginScreenState extends State<LoginScreen> with StateLoading {
         loading = true;
 
         // final credential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
         );
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             duration: Duration(milliseconds: 100),
@@ -63,6 +64,7 @@ class _LoginScreenState extends State<LoginScreen> with StateLoading {
           ),
         );
         Future.delayed(const Duration(milliseconds: 400), () {
+          if (!mounted) return;
           context.navToview(const HomeScreen());
         });
       } on FirebaseAuthException catch (e) {
@@ -260,9 +262,10 @@ class _LoginScreenState extends State<LoginScreen> with StateLoading {
                       Text(
                         "Don't have account? ",
                         style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.grey.withOpacity(0.4),),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.withValues(alpha: 0.4),
+                        ),
                       ),
                       GestureDetector(
                         onTap: () {
