@@ -21,14 +21,34 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String username = "User x";
-  
-  int get personalTaskNumber => context
-      .watch<PersonalTaskProvider>()
-      .personalTasks
-      .length;
+
+  int get personalTaskNumber =>
+      context.watch<PersonalTaskProvider>().personalTasks.length;
 
   int teamTaskNumber = 8;
 
+  int get taskProgress {
+    final taskProvider = context.watch<PersonalTaskProvider>();
+    final personalTasks = taskProvider.personalTasks;
+
+    // Gère le cas où il n'y a aucune tâche pour éviter une division par zéro
+    if (personalTasks.isEmpty) {
+      return 0; // Ou une autre valeur par défaut appropriée
+    }
+
+    final completedTasksCount =
+        personalTasks.where((element) => element.isCompleted).length;
+
+    // Si personalTasks n'est pas vide, personalTasks.length ne sera pas 0 ici.
+    // De plus, j'utilise la division standard (/) qui produit un double,
+    // puis .round() pour obtenir un entier.
+    final progress =
+        (completedTasksCount * 100.0 / personalTasks.length).round();
+
+    return progress;
+  }
+
+  /*
   int get taskProgess => (context
       .watch<PersonalTaskProvider>()
       .personalTasks
@@ -36,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       .watch<PersonalTaskProvider>()
       .personalTasks.length
       ;
+  */
 
   int get completedTask => context
       .watch<PersonalTaskProvider>()
@@ -61,73 +82,66 @@ class _HomeScreenState extends State<HomeScreen> {
     DocumentReference usersDocument =
         usersCollection.doc(FirebaseAuth.instance.currentUser!.uid);
 
-
     CollectionReference personalTaskCollection =
         usersDocument.collection("personal_tasks");
 
     personalTaskCollection.snapshots().listen((event) {
       debugPrint(event.docs.length.toString());
+      if (!mounted) return;
       context.read<PersonalTaskProvider>().load();
-     });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        print('User is currently signed out!');
+        debugPrint('User is currently signed out!');
       } else {
-        print('User is signed in!');
+        debugPrint('User is signed in!');
       }
     });
-    return Material(
-      child: WillPopScope(
-        onWillPop: () async {
-          return true;
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            systemOverlayStyle: const SystemUiOverlayStyle(
-              statusBarColor: Color(0xFFF6F6F6),
-              statusBarBrightness: Brightness.dark,
-            ),
-            elevation: 0.0,
-            backgroundColor: const Color(0xFFF6F6F6),
-            leading: Container(
-              margin: EdgeInsets.all(context.width * 0.02),
-              child: const CircleAvatar(
-                backgroundImage: AssetImage("assets/images/user.png"),
-              ),
-            ),
-            title: Text(
-              "Welcome back, $username !👋",
-              style: const TextStyle(
-                fontSize: 19,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Color(0xFFF6F6F6),
+          statusBarBrightness: Brightness.dark,
+        ),
+        elevation: 0.0,
+        backgroundColor: const Color(0xFFF6F6F6),
+        leading: Container(
+          margin: EdgeInsets.all(context.width * 0.02),
+          child: const CircleAvatar(
+            backgroundImage: AssetImage("assets/images/user.png"),
           ),
-          body: context.watch<PersonalTaskProvider>().isLoading
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : myBody(context),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: const Color(0xFF9581FF),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (context) {
-                  return const BottomModal();
-                },
-              );
+        ),
+        title: Text(
+          "Welcome back, $username !👋",
+          style: const TextStyle(
+            fontSize: 19,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+      body: context.watch<PersonalTaskProvider>().isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : myBody(context),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF9581FF),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (context) {
+              return const BottomModal();
             },
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-          ),
+          );
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
         ),
       ),
     );
@@ -226,10 +240,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   CircularPercentIndicator(
                     radius: 50.0,
                     lineWidth: 17.0,
-                    percent: taskProgess / 100,
+                    percent: taskProgress / 100,
                     backgroundColor: Colors.white,
                     center: Text(
-                      "$taskProgess%",
+                      "$taskProgress%",
                       style: const TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -271,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         "Completed task",
                         style: TextStyle(
                           fontSize: 17,
-                          color: const Color(0xFF0F071A).withOpacity(0.3),
+                          color: const Color(0xFF0F071A).withValues(alpha: 0.3),
                         ),
                       ),
                     ],
@@ -300,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         "Pending task",
                         style: TextStyle(
                           fontSize: 17,
-                          color: const Color(0xFF0F071A).withOpacity(0.3),
+                          color: const Color(0xFF0F071A).withValues(alpha: 0.3),
                         ),
                       ),
                     ],
@@ -334,7 +348,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             "View all",
                             style: TextStyle(
                               fontSize: 13,
-                              color: const Color(0xFF0F071A).withOpacity(0.3),
+                              color: const Color(0xFF0F071A)
+                                  .withValues(alpha: 0.3),
                             ),
                           ),
                         ),
@@ -396,7 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         style: TextStyle(
                                           fontSize: 13,
                                           color: const Color(0xFF0F071A)
-                                              .withOpacity(0.3),
+                                              .withValues(alpha: 0.3),
                                         ),
                                       ),
                                       SizedBox(
@@ -410,7 +425,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               style: TextStyle(
                                                 fontSize: 10,
                                                 color: const Color(0xFF0F071A)
-                                                    .withOpacity(0.2),
+                                                    .withValues(alpha: 0.2),
                                               ),
                                             ),
                                             Row(
@@ -422,7 +437,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Icons.access_time,
                                                   size: 22,
                                                   color: const Color(0xFF0F071A)
-                                                      .withOpacity(0.2),
+                                                      .withValues(alpha: 0.2),
                                                 ),
                                                 Gap(context.width * 0.011),
                                                 Text(
@@ -435,7 +450,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     fontSize: 13,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                 ),
                                                 Gap(context.width * 0.035),
@@ -443,7 +459,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Icons.calendar_month,
                                                   size: 22,
                                                   color: const Color(0xFF0F071A)
-                                                      .withOpacity(0.2),
+                                                      .withValues(alpha: 0.2),
                                                 ),
                                                 Gap(context.width * 0.011),
                                                 Text(
@@ -456,7 +472,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     fontSize: 13,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                 ),
                                               ],
@@ -506,7 +523,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             "View all",
                             style: TextStyle(
                               fontSize: 13,
-                              color: const Color(0xFF0F071A).withOpacity(0.3),
+                              color: const Color(0xFF0F071A)
+                                  .withValues(alpha: 0.3),
                             ),
                           ),
                         ),
@@ -568,7 +586,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         style: TextStyle(
                                           fontSize: 13,
                                           color: const Color(0xFF0F071A)
-                                              .withOpacity(0.3),
+                                              .withValues(alpha: 0.3),
                                         ),
                                       ),
                                       SizedBox(
@@ -582,7 +600,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               style: TextStyle(
                                                 fontSize: 10,
                                                 color: const Color(0xFF0F071A)
-                                                    .withOpacity(0.2),
+                                                    .withValues(alpha: 0.2),
                                               ),
                                             ),
                                             Row(
@@ -594,7 +612,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Icons.access_time,
                                                   size: 22,
                                                   color: const Color(0xFF0F071A)
-                                                      .withOpacity(0.2),
+                                                      .withValues(alpha: 0.2),
                                                 ),
                                                 Gap(context.width * 0.011),
                                                 Text(
@@ -608,7 +626,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     fontSize: 13,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                 ),
                                                 Gap(context.width * 0.035),
@@ -616,7 +635,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Icons.calendar_month,
                                                   size: 22,
                                                   color: const Color(0xFF0F071A)
-                                                      .withOpacity(0.2),
+                                                      .withValues(alpha: 0.2),
                                                 ),
                                                 Gap(context.width * 0.011),
                                                 Text(
@@ -630,7 +649,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     fontSize: 13,
                                                     color:
                                                         const Color(0xFF0F071A)
-                                                            .withOpacity(0.2),
+                                                            .withValues(
+                                                                alpha: 0.2),
                                                   ),
                                                 ),
                                               ],

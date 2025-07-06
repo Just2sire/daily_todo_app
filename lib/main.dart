@@ -19,7 +19,10 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => PersonalTaskProvider(taskRepository: FireStoreTaskRepository())),
+        ChangeNotifierProvider(
+            create: (context) =>
+                PersonalTaskProvider(taskRepository: LocalTaskRepository())),
+        // ChangeNotifierProvider(create: (context) => PersonalTaskProvider(taskRepository: FireStoreTaskRepository())),
       ],
       child: const MainApp(),
     ),
